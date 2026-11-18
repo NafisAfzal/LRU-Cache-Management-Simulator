@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 620" width="100%" role="img" aria-labelledby="title desc">
+  <title id="title">Project architecture of the LRU cache simulation</title>
+  <desc id="desc">The request sequence drives a four-entry cache. Access checks classify hits and misses, timestamps track recency, eviction replaces the oldest entry, and final statistics are reported.</desc>
+  <defs>
+    <marker id="arrow3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#475569"/>
+    </marker>
+    <style>
+      .ttl { font-family:system-ui,-apple-system,'Segoe UI',sans-serif; font-size:24px; font-weight:700; fill:#0f172a; }
+      .sub { font-family:system-ui,-apple-system,'Segoe UI',sans-serif; font-size:15px; fill:#475569; }
+      .node { fill:#f8fafc; stroke:#94a3b8; stroke-width:1.6; }
+      .accent { fill:#eff6ff; stroke:#2563eb; stroke-width:2; }
+      .hot { fill:#fff7ed; stroke:#d97706; stroke-width:2; }
+      .cool { fill:#ecfdf5; stroke:#0d9488; stroke-width:2; }
+      .lab { font-family:system-ui,-apple-system,'Segoe UI',sans-serif; font-size:17px; font-weight:700; fill:#0f172a; }
+      .small { font-family:system-ui,-apple-system,'Segoe UI',sans-serif; font-size:13px; fill:#475569; }
+      .ln { stroke:#475569; stroke-width:2; fill:none; marker-end:url(#arrow3); }
+    </style>
+  </defs>
+
+  <rect width="1100" height="620" fill="#ffffff"/>
+  <text class="ttl" x="40" y="48">Simulation architecture</text>
+  <text class="sub" x="40" y="76">Components present in the report's code listing and output screenshots</text>
+
+  <rect class="accent" x="40" y="130" width="210" height="110" rx="10"/>
+  <text class="lab" x="145" y="170" text-anchor="middle">Access request</text>
+  <text class="small" x="145" y="194" text-anchor="middle">sequence</text>
+  <text class="small" x="145" y="218" text-anchor="middle">11 fixed requests</text>
+
+  <rect class="node" x="330" y="130" width="210" height="110" rx="10"/>
+  <text class="lab" x="435" y="170" text-anchor="middle">Cache storage</text>
+  <text class="small" x="435" y="194" text-anchor="middle">4 entries</text>
+  <text class="small" x="435" y="218" text-anchor="middle">tag · valid · time</text>
+
+  <rect class="hot" x="620" y="130" width="210" height="110" rx="10"/>
+  <text class="lab" x="725" y="170" text-anchor="middle">Hit / miss check</text>
+  <text class="small" x="725" y="194" text-anchor="middle">accessCache()</text>
+  <text class="small" x="725" y="218" text-anchor="middle">tag comparison</text>
+
+  <rect class="cool" x="900" y="130" width="170" height="110" rx="10"/>
+  <text class="lab" x="985" y="170" text-anchor="middle">Recency</text>
+  <text class="small" x="985" y="194" text-anchor="middle">globalClock</text>
+  <text class="small" x="985" y="218" text-anchor="middle">timestamps</text>
+
+  <path class="ln" d="M250 185 L330 185"/>
+  <path class="ln" d="M540 185 L620 185"/>
+  <path class="ln" d="M830 185 L900 185"/>
+
+  <rect class="node" x="620" y="360" width="210" height="110" rx="10"/>
+  <text class="lab" x="725" y="400" text-anchor="middle">addToCache()</text>
+  <text class="small" x="725" y="424" text-anchor="middle">empty slot or eviction</text>
+  <text class="small" x="725" y="448" text-anchor="middle">on a cache miss</text>
+
+  <rect class="hot" x="330" y="360" width="210" height="110" rx="10"/>
+  <text class="lab" x="435" y="400" text-anchor="middle">LRU eviction</text>
+  <text class="small" x="435" y="424" text-anchor="middle">evictOldest()</text>
+  <text class="small" x="435" y="448" text-anchor="middle">smallest timestamp</text>
+
+  <rect class="accent" x="40" y="360" width="210" height="110" rx="10"/>
+  <text class="lab" x="145" y="400" text-anchor="middle">Result reporting</text>
+  <text class="small" x="145" y="424" text-anchor="middle">hits · misses</text>
+  <text class="small" x="145" y="448" text-anchor="middle">final cache state</text>
+
+  <path class="ln" d="M725 240 L725 360"/>
+  <text class="small" x="742" y="300">miss</text>
+  <path class="ln" d="M620 415 L540 415"/>
+  <path class="ln" d="M330 415 L250 415"/>
+  <path class="ln" d="M985 240 L985 300 L435 300 L435 360"/>
+  <text class="small" x="700" y="290">oldest timestamp selects victim</text>
+
+  <path class="ln" d="M435 470 L145 470 L145 470"/>
+  <path class="ln" d="M145 470 L145 360"/>
+
+  <text class="sub" x="40" y="540">The recency signal flows back from the clock/timestamp state into the eviction decision.</text>
+  <text class="sub" x="40" y="568">No separate memory module, replacement policy, or benchmark harness exists in the report.</text>
+  <text class="sub" x="40" y="596">MEMORY_SIZE = 50 is defined as a configuration constant; the demonstrated trace uses the 11-request array.</text>
+</svg>

@@ -1,57 +1,83 @@
-# Simulating Cache Management Policies to Reduce Pollution and Thrashing in C Using LRU
+# LRU Cache Management Simulator
 
-A CSE 360 academic report on simulating a small CPU cache to demonstrate cache pollution, thrashing,
-and Least Recently Used (LRU) replacement behavior. This repository publishes the final approved
-report; it does not include a separate runnable source-code project.
+An educational C simulation of cache hits, misses, LRU eviction, and working-set protection. The project models a four-entry cache and shows how frequently used data survives a short sequence of one-off accesses.
 
-## Project Overview
+`C` · `LRU replacement` · `cache simulation` · `serial output`
 
-The report models a CPU cache with four entries and a simple access trace. Frequently used data
-(the "working set") is mixed with one-off accesses (the "pollution"). Each access updates a logical
-timestamp, and the least recently used entry is evicted when the cache is full. The simulation shows
-how LRU keeps the working set in the cache and reports hits, misses, and the final cache contents.
+> This repository publishes the final academic report and explanatory diagrams. It contains no separate runnable source file; the complete code listing is in the report.
 
-## Objectives
+---
 
-- Model a small cache and observe how unnecessary data can displace useful data.
-- Demonstrate cache pollution and the resulting thrashing behavior.
-- Apply LRU replacement to protect frequently reused entries.
-- Show hit/miss activity and final cache state through serial output.
+## Overview
 
-## Background
+Cache management decides which data stays in a small, fast storage layer. When a program repeatedly requests the same items, keeping them close avoids slower main-memory access. **Cache pollution** happens when one-off accesses fill the cache and push out frequently used data. The resulting repeated misses are what the report describes as **thrashing**.
 
-**Cache pollution** occurs when one-off accesses fill the cache and push out frequently used data.
-When the processor repeatedly has to fetch that data from slower main memory, performance degrades —
-a condition described in the report as **thrashing**. LRU addresses this by tracking when each entry
-was last used and discarding the oldest entry first.
+This project uses **Least Recently Used (LRU)** replacement to protect a frequently accessed working set. Every access carries a logical timestamp; when the cache is full, the entry with the oldest timestamp is replaced. The simulation prints each cache state so the eviction decisions can be followed in real time.
 
-## Implementation Overview
+## How LRU Works
 
-The report contains the complete C-style sketch. Its main elements are:
+LRU assumes that the item used longest ago is the least likely to be needed next.
 
-- A `CacheLine` structure with `tag`, `valid`, and a timestamp field.
-- `CACHE_SIZE` set to 4 and `MEMORY_SIZE` set to 50.
-- A global logical clock (`globalClock`) that advances on every request.
-- An access pattern of `{1, 2, 99, 1, 2, 98, 1, 2, 97, 1, 2}`.
-- Functions for cache access, insertion, LRU eviction, and state printing.
-- Serial output at 115200 baud for real-time hit/miss observation.
+- A **hit** means the requested tag is already cached. Its timestamp is refreshed, so it becomes recently used again.
+- A **miss** means the tag is absent. The item is inserted into an empty slot, or, when all slots are occupied, it replaces the least recently used entry.
+- The "least recently used" entry is the valid slot with the smallest timestamp.
 
-The included output screenshots report 11 requests, 6 hits, 5 misses, and a final cache containing
-`{1, 2, 97, 98}`, with the message `SUCCESS: Cache Pollution avoided.`
+A short example from the report's trace:
 
-## Cache Management Policy
+| Request | Outcome | Effect on recency |
+|---:|---|---|
+| 1 | MISS | Inserted into slot 0 at time 1 |
+| 2 | MISS | Inserted into slot 1 at time 2 |
+| 99 | MISS | Inserted into slot 2 at time 3 |
+| 1 | HIT | Timestamp refreshed to time 4 |
+| 2 | HIT | Timestamp refreshed to time 5 |
 
-**LRU (Least Recently Used):** on a hit, the entry's timestamp is refreshed; on a miss, the entry is
-inserted if space is available. When the cache is full, the entry with the smallest timestamp is
-replaced. This protects the working set (`1` and `2`) from being displaced by single-use accesses
-(`99`, `98`, `97`).
+Later, request `97` arrives with all four slots occupied. Entry `99` has the oldest timestamp (`T3`), so it is evicted and replaced by `97`. The frequently accessed items `1` and `2` remain.
 
-## Technologies Used
+## Methodology
 
-- C / Arduino-style sketch with `setup()` and `loop()`
-- Serial Monitor output (`Serial.begin(115200)`)
-- ESP32 Dev Module reference in the output screenshot
-- CPU cache concepts: working set, pollution, thrashing, LRU replacement
+The simulation follows a fixed, code-derived workflow:
+
+1. Initialize four cache slots as invalid, with `tag = -1` and `time = 0`.
+2. For each request in `{1, 2, 99, 1, 2, 98, 1, 2, 97, 1, 2}`, advance the logical clock.
+3. Search for the tag with `accessCache()`.
+4. On a hit, refresh the slot's timestamp. On a miss, insert into an empty slot with `addToCache()`, or call `evictOldest()` when the cache is full.
+5. Print the cache state after every request.
+6. Report totals, final cache contents, and whether the working set survived.
+
+![LRU simulation workflow](assets/lru-workflow.svg)
+
+The full step-by-step trace, configuration table, and editable Mermaid source are in [Methodology](docs/METHODOLOGY.md).
+
+## Cache Operation Visualization
+
+The diagram below uses the verified trace. At clock 8 the cache holds `1`, `2`, `99`, and `98`; `99` has the oldest timestamp. Request `97` misses, all slots are full, so `evictOldest()` replaces `99`. Red marks the least recently used entry and green marks the newly inserted one.
+
+![LRU cache operation example](assets/lru-cache-operation.svg)
+
+The architecture diagram shows how the request sequence, cache storage, hit/miss check, recency tracking, eviction, and reporting connect in the published implementation.
+
+![Project architecture](assets/project-architecture.svg)
+
+## Results and Observations
+
+The report's output screenshots confirm:
+
+| Metric | Value |
+|---|---:|
+| Requests processed | 11 |
+| Cache hits | 6 |
+| Cache misses | 5 |
+| Final cache contents | `{1, 2, 97, 98}` |
+
+The final message is `SUCCESS: Cache Pollution avoided.` The working set `{1, 2}` remained in the cache despite the one-off accesses `99`, `98`, and `97`. These are the only results reported; no performance percentages or benchmark comparisons are claimed.
+
+## Technologies
+
+- C, written as an Arduino-style sketch with `setup()` and `loop()`
+- Serial output via `Serial.begin(115200)` and the Arduino Serial Monitor
+- ESP32 Dev Module reference shown in the output screenshot
+- Core concepts: working set, cache pollution, thrashing, LRU replacement
 
 ## Team Members
 
@@ -63,28 +89,16 @@ The original academic work was completed collaboratively by:
 - Istiaque ahmed
 - Md Ahsiul Karim
 
-## Course Information
-
-- **Institution:** East West University, Department of Computer Science and Engineering
-- **Course:** CSE 360 — Computer Architecture
-- **Semester:** Fall 2025
-- **Section:** 05
-- **Submitted to:** Md. Adnan Morshed, Lecturer
-- **Submission date:** 17/12/2025
-
 ## Final Report
 
-[Download the final approved report (PDF)](Simulating_Cache_Management_Policies.pdf)
+[Read or download the final approved report (PDF)](Simulating_Cache_Management_Policies.pdf)
 
-The report is 7 pages and contains the project description, features, full code listing, and output
-screenshots. It is the only report version published here.
+The seven-page report contains the project description, features, complete code listing, and output screenshots. It is the only report version published here.
 
 ## Academic Attribution
 
-All academic content, implementation, and findings are credited to the CSE 360 team listed above.
-Repository preparation, documentation organization, and publication maintenance were performed by
-Nafis Afzal; these activities do not change the original collaborative authorship of the report.
+This is a collaborative academic project for a Computer Architecture course (Fall 2025, Section 05) at East West University, submitted to Md. Adnan Morshed. All academic content, implementation, and findings belong to the team listed above.
 
-No open-source license has been granted. The repository is public for academic and reference
-purposes only; public visibility does not grant permission to reuse, copy, or redistribute the
-report.
+Repository preparation, documentation, and diagram authoring were performed by Nafis Afzal. These activities do not change the original collaborative authorship of the report.
+
+No open-source license has been granted. Public visibility of this repository does not grant permission to reuse, copy, or redistribute the report.
