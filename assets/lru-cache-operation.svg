@@ -40,7 +40,7 @@
     <rect class="hit" x="480" y="0" width="70" height="42" rx="8"/><text class="chip" x="515" y="27" text-anchor="middle" fill="#1e40af">1 · H</text>
     <rect class="hit" x="560" y="0" width="70" height="42" rx="8"/><text class="chip" x="595" y="27" text-anchor="middle" fill="#1e40af">2 · H</text>
     <rect class="miss" x="640" y="0" width="70" height="42" rx="8"/><text class="chip" x="675" y="27" text-anchor="middle" fill="#9a3412">97 · M</text>
-    <text class="sub" x="730" y="28">H = hit (refresh recency) · M = miss (insert or evict)</text>
+    <text class="sub" x="710" y="28">H = hit (refresh) · M = miss (insert / evict)</text>
   </g>
 
   <!-- before state -->
