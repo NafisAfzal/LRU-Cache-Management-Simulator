@@ -97,8 +97,8 @@ The seven-page report contains the project description, features, complete code 
 
 ## Academic Attribution
 
-This is a collaborative academic project for a Computer Architecture course (Fall 2025, Section 05) at East West University, submitted to Md. Adnan Morshed. All academic content, implementation, and findings belong to the team listed above.
+This collaborative academic project was completed by the team members listed above and submitted to **Md. Adnan Morshed, Lecturer, Department of Computer Science and Engineering, East West University**. The academic work, implementation, analysis, and findings presented in the report are the collective contributions of the team.
 
-Repository preparation, documentation, and diagram authoring were performed by Nafis Afzal. These activities do not change the original collaborative authorship of the report.
+The GitHub repository setup and maintenance, README documentation, and supplementary diagrams were prepared by **Nafis Afzal**. These contributions relate to the presentation and organization of the repository and do not change the collaborative authorship of the original academic report.
 
-No open-source license has been granted. Public visibility of this repository does not grant permission to reuse, copy, or redistribute the report.
+**Licensing:** No open-source license has been granted. Public availability of this repository does not imply permission to reproduce, modify, redistribute, or otherwise reuse its contents.
